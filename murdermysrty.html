@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murder Mystery Challenge</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; background: #000; color: #fff; }
+        
+        /* الصورة مخفية في البداية */
+        .map-container img { 
+            display: none; 
+            width: 100%; 
+            max-width: 600px; 
+            border: 3px solid #8b0000; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+        }
+
+        .game-box { background: #1e1e1e; padding: 30px; border-radius: 20px; display: inline-block; box-shadow: 0 0 20px rgba(255,0,0,0.2); }
+        input { padding: 12px; border-radius: 5px; border: 1px solid #444; background: #333; color: white; width: 200px; font-size: 16px; margin-bottom: 10px; text-align: center; }
+        button { padding: 12px 25px; cursor: pointer; background: #8b0000; color: white; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #ff0000; }
+        
+        #message { font-size: 1.2rem; margin-top: 15px; font-weight: bold; }
+        #attempts { color: #ffcc00; }
+        
+        /* الجملة السرية مخفية */
+        .success-text { color: #00ff00; border: 2px dashed #00ff00; padding: 15px; margin-top: 20px; display: none; font-size: 1.3rem; background: rgba(0,255,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <h1>تحقيق Murder Mystery</h1>
+    
+    <div class="game-box">
+        <h3>أدخل كلمة السر لكشف الدليل:</h3>
+        <input type="text" id="userInput" placeholder="اكتب الكلمة هنا..." onkeydown="if(event.key==='Enter') checkWord()">
+        <br>
+        <button onclick="checkWord()">تحقق من الكلمة</button>
+        
+        <p>المحاولات المتبقية: <span id="attempts">3</span></p>
+        <p id="message"></p>
+        
+        <div id="result">
+            <div id="secretSentence" class="success-text">
+                لقد وجدت القاتل! الجملة السرية هي: "الخائن هو الشخص الذي كان في المطبخ"
+            </div>
+            <div class="map-container">
+                <img id="secretMap" src="مطعم عبو موته.png" alt="خريطة اللعبة">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctWord = "Secret"; // الكلمة السرية
+        let tries = 3;
+
+        function checkWord() {
+            const inputField = document.getElementById("userInput");
+            const userGuess = inputField.value.trim();
+            const msg = document.getElementById("message");
+            const triesDisplay = document.getElementById("attempts");
+            const secretBox = document.getElementById("secretSentence");
+            const secretImg = document.getElementById("secretMap");
+
+            if (tries <= 0) return;
+
+            if (userGuess === correctWord) {
+                msg.innerHTML = "✅ الكلمة صحيحة! تم كشف الدليل.";
+                msg.style.color = "#00ff00";
+                
+                // إظهار الجملة والصورة
+                secretBox.style.display = "block";
+                secretImg.style.display = "block";
+                
+                inputField.disabled = true;
+                document.querySelector("button").style.display = "none";
+            } else {
+                tries--;
+                triesDisplay.textContent = tries;
+                
+                if (tries > 0) {
+                    msg.innerHTML = "❌ كلمة غلط، حاول مرة تانية.";
+                    msg.style.color = "#ff4444";
+                } else {
+                    msg.innerHTML = "💀 لقد فشلت! تم كشف أمرك.";
+                    msg.style.color = "#ff0000";
+                    inputField.disabled = true;
+                }
+            }
+            inputField.value = ""; 
+        }
+    </script>
+
+</body>
+</html>
